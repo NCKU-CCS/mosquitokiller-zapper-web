@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 21 30 30" style="enable-background:new 0 21 30 30;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#XMLID_3_);stroke:#8A8A8A;stroke-width:0.75;stroke-miterlimit:10;}
+	.st1{fill:none;}
+	.st2{fill:#FFFFFF;}
+	.st3{fill:#8A8A8A;}
+</style>
+<title>waste-basket-15.svg</title>
+<radialGradient id="XMLID_3_" cx="13.8957" cy="29.7016" r="18.9758" gradientUnits="userSpaceOnUse">
+	<stop  offset="0" style="stop-color:#6FD9A3"/>
+	<stop  offset="0.3742" style="stop-color:#6FD7A2"/>
+	<stop  offset="0.5562" style="stop-color:#71CF9F"/>
+	<stop  offset="0.6968" style="stop-color:#73C29A"/>
+	<stop  offset="0.816" style="stop-color:#77B093"/>
+	<stop  offset="0.9207" style="stop-color:#7B9889"/>
+	<stop  offset="1" style="stop-color:#808080"/>
+</radialGradient>
+<path id="XMLID_2_" class="st0" d="M24.2,32.9c0,4.8-7.4,13.9-9.5,16.5c-0.3,0.4-0.9,0.4-1.2,0c-2.2-2.6-9.6-11.7-9.6-16.5
+	c0-5.6,4.6-10.1,10.2-10.1S24.2,27.3,24.2,32.9z"/>
+<rect x="4.8" y="24" class="st1" width="19" height="19"/>
+<g>
+	<path class="st2" d="M11.2,40.4c-0.4,0-0.7-0.3-0.8-0.6v-0.1l-1.3-8.1c0-0.5,0.2-0.9,0.7-1h0.1h9c0.5,0,0.8,0.4,0.9,0.9
+		c0,0,0,0,0,0.1l-1.3,8.1c0,0.4-0.4,0.7-0.9,0.7C17.6,40.4,11.2,40.4,11.2,40.4z M9.3,30.4c-0.5,0-0.9-0.4-0.9-0.9s0.4-0.9,0.9-0.9
+		h2.1v-1.1c0-0.5,0.4-0.9,0.9-0.9h4c0.5,0,0.9,0.4,0.9,0.9v1.1h2.1c0.5,0,0.9,0.4,0.9,0.9s-0.4,0.9-0.9,0.9H9.3z M15.4,28.6v-0.2
+		h-2.2v0.2H15.4z"/>
+	<path class="st3" d="M16.3,27c0.3,0,0.5,0.2,0.5,0.5V29h2.5c0.3,0,0.5,0.2,0.5,0.5S19.6,30,19.3,30h-10c-0.3,0-0.5-0.2-0.5-0.5
+		S9,29,9.3,29h2.5v-1.5c0-0.3,0.2-0.5,0.5-0.5H16.3 M12.8,29h3v-1h-3V29 M18.7,31c0.3,0,0.5,0.2,0.5,0.6l-1.3,8
+		c0,0.2-0.2,0.4-0.5,0.4h-6.2c-0.2,0-0.4-0.2-0.5-0.4l-1.3-8c0-0.3,0.1-0.5,0.4-0.6h0.1L18.7,31 M19.2,31.5L19.2,31.5L19.2,31.5
+		 M16.3,26.3h-4c-0.7,0-1.2,0.5-1.2,1.2v0.8H9.3c-0.7,0-1.2,0.5-1.2,1.2c0,0.6,0.4,1.1,0.9,1.2c-0.2,0.2-0.3,0.5-0.3,0.9v0.1v0.1
+		l1.3,8v0.1l0.1,0.1c0.2,0.4,0.6,0.8,1.2,0.8h6.2c0.7,0,1.2-0.5,1.2-1.1l1.3-8v-0.1v-0.1v-0.1l0,0c0-0.3-0.1-0.6-0.3-0.8
+		c0.5-0.1,0.9-0.6,0.9-1.2c0-0.7-0.5-1.2-1.2-1.2h-1.8v-0.8C17.6,26.8,17,26.3,16.3,26.3L16.3,26.3z"/>
+</g>
+</svg>
