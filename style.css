@@ -2,45 +2,45 @@
   background-color: #808080;
 }
 
+.container {
+  margin-bottom: 60px;
+}
+
 #map {
   height: 600px;
 }
 
 
 /**** map ****/
-#map table{
-	table-layout: auto;
-	white-space:nowrap;
+
+#map table {
+  table-layout: auto;
+  white-space: nowrap;
 }
-#map th, #map td {
+
+#map th,
+#map td {
   text-align: left;
   line-height: 1.5;
   color: dimgray;
 }
-#map th{
-	border-right: 1px solid #ddd;
-	padding-right: 10px;
+
+#map th {
+  border-right: 1px solid #ddd;
+  padding-right: 10px;
 }
-#map td{
-	padding-left: 10px;
+
+#map td {
+  padding-left: 10px;
 }
+
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
   background: white;
-  background: rgba(255,255,255,0.8);
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
-}
-
-label#danger-marker-checkbox {
-  margin: 0;
-  padding: 5px;
-  cursor: pointer;
-}
-
-label#danger-marker-checkbox img {
-  padding: 6px 5px;
 }
 
 .legend {
@@ -49,8 +49,8 @@ label#danger-marker-checkbox img {
 }
 
 .legend hr {
-	margin-top: 7px;
-	margin-bottom: 7px;
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
 .legend i {
@@ -65,121 +65,14 @@ label#danger-marker-checkbox img {
   height: 54px;
 }
 
-.legend-header{
-	vertical-align: middle;
-	height: 15px;
+.legend-header {
+  vertical-align: middle;
+  height: 15px;
   line-height: 15px;
 }
 
-
-.legnedcheckbox{
+.legnedcheckbox {
   padding-right: 5px;
-}
-/****analysis****/
-
-#chart > svg {
-  border: 1px solid #C0C0C0;
-  border-radius: 10px;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: dimgrey;
-  stroke-width: 1;
-  opacity: 0.5;
-}
-.axis text {
-  opacity: 0.5;
-}
-
-.dot {
-  stroke-width: 0;
-  fill: dimgrey;
-}
-
-.tooltip {
-  border: 1px solid grey;
-  padding: 5px;
-  border-radius: 5px;
-  white-space: nowrap;
-}
-
-/****table****/
-
-#table-content table{
-  table-layout: fixed;
-  white-space: break-all;
-  width: 100%;
-  border: 1px solid #C0C0C0;
-  margin-bottom: 60px;
-}
-#table-content th{
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 15px;
-  letter-spacing: 1px;
-  padding: 12px;
-  margin: 0px;
-  line-height: 30px;
-  border-bottom: 1px solid #C0C0C0;
-  border-right: 1px solid #C0C0C0;
-}
-
-#table-content td{
-  text-align: right;
-  vertical-align: top;
-  letter-spacing: 0.8px;
-  padding: 12px;
-  border-bottom: 1px solid #C0C0C0;
-  border-right: 1px solid #C0C0C0;
-}
-
-#table-content ul{
-  margin: 0px;
-  padding: 0px;
-}
-
-#table-content li{
-  list-style: none;
-  text-align: left;
-  margin: 8px;
-}
-
-#table-content li .inf{
-  opacity: 0.6;
-}
-
-.read-more-state {
-  display: none;
-}
-
-.read-more-target {
-  display: none;
-}
-
-.read-more-state:checked ~ .read-more-wrap .read-more-target {
-  display: block;
-}
-
-.read-more-state ~ .read-more-trigger:before {
-  content: attr(data-txt);
-}
-
-.read-more-state:checked ~ .read-more-trigger:before {
-  content: '收合';
-}
-
-.read-more-trigger {
-  cursor: pointer;
-  display: inline-block;
-  padding: 0 .5em;
-  color: #666;
-  font-size: .9em;
-  line-height: 2;
-  border: 1px solid #ddd;
-  border-radius: .25em;
 }
 
 .footer {
@@ -192,36 +85,7 @@ label#danger-marker-checkbox img {
   z-index: 10000;
 }
 
-/* barAndLine*/
-
-#barAndLine-content path.line{
-  stroke: orange;
-  stroke-width: 2;
-  fill: none;
-}
-
-#barAndLine-content:last-child {
-  margin-bottom: 64px;
-}
-
-#barAndLine-description{
-  padding: 12px;
-  margin: 12px;
-  top: 120px;
-  left: 120px;
-  border: 1px solid #C0C0C0;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-}
-#barAndLine-description > div {
-  padding: 12px;
-}
-
-#barAndLine-description * {
-  vertical-align: middle;
-}
-.des-square{
+.des-square {
   background-color: blue;
   width: 30px;
   height: 30px;
@@ -229,7 +93,7 @@ label#danger-marker-checkbox img {
   margin: 12px;
 }
 
-.des-line{
+.des-line {
   position: relative;
   display: inline-block;
   margin: 22px 12px;
@@ -243,29 +107,3 @@ label#danger-marker-checkbox img {
   stroke-width: 2;
   fill: orange;
 }
-
-.barAndLine-tooltip {
-  position: absolute;
-  text-align: left;
-  padding: 8px 12px;
-  width: 100px;
-  font: 12px sans-serif;
-  background-color: #ffffff;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-  opacity: 0.9;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
-  0 1px 2px rgba(0, 0, 0, 0.24);
-}
-
-.barAndLine-tooltip > div{
-  margin: 4px;
-  font-weight: 900;
-  text-align: center
-}
-
-.barrel_legend:hover{
-   opacity: 0.5;
-}
-

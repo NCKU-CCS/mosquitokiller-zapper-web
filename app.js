@@ -47,7 +47,6 @@ $(document).ready(function () {
     bucketJson = res[0]['bucket-record']
     locationJson = res[1]
     eventJson = res[2]['mccs']
-    console.log(res)
     initMap();
     $('#datetimepicker').val('2017-08-09');
     $("#datetimepicker").trigger("change");
@@ -107,41 +106,58 @@ function initMap(){
     return div;
   };
 
-
-
-
-  $(".barrel_legend > input").bind("click", function () {
+  avgEggLegend.addTo(map);
+  weekEggLegend.addTo(map);
+  $(".barrel_legend > input").on("click", function () {
     var selectedClass = '.' + $(this).val()
+    console.log(selectedClass)
     if ($(this).prop("checked")) {
       $(selectedClass).css('display', 'block')
     } else {
       $(selectedClass).css('display', 'none')
     }
   })
-  avgEggLegend.addTo(map);
-  weekEggLegend.addTo(map);
 }
 
 function insertBucketList(date) {
   $("#bucket-list").empty();
   clearMap();
-  var insertBucketJson = {};
-  console.log(bucketJson)
+  var insertBucketJson = []
   bucketJson.forEach(function (bucket) {
     if (date !== bucket.investigate_date)
       return;
     var bucketAddress = "{0}{1}{2}".format(bucket.county, bucket.town, bucket.village);
-    insertBucketJson[bucket.bucket_id] = {
+    insertBucketJson.push({
       egg_count: bucket.egg_count,
-      avg_egg_count: bucket.avg_egg_count
-    };
+      avg_egg_count: getAvgEggCount(bucket.bucket_id, bucket.investigate_date),
+      village: bucket.village,
+      bucket_id: bucket.bucket_id,
+      investigate_date: bucket.investigate_date
+    });
     insertBucketHtml(bucketAddress, bucket);
   })
-  updateMap(date);
+  updateMap(date, insertBucketJson);
+}
+
+function getAvgEggCount(bucketId, date) {
+  var sumEggCount = 0;
+  var bucketsBeforeDate = 0;
+  bucketJson.forEach(function (bucket) {
+    if (bucket.bucket_id !== bucketId){
+      return
+    }
+    var thisDate = moment(bucket.investigate_date)
+    var isBefore = thisDate.isBefore(moment(date))
+    console.log(thisDate, moment(date))
+    if(isBefore){
+      sumEggCount += bucket.egg_count
+      bucketsBeforeDate++
+    }
+  })
+  return bucketsBeforeDate === 0 ? 0 : sumEggCount / bucketsBeforeDate
 }
 
 function insertBucketHtml(bucketAddress, bucket) {
-  console.log(bucket)
   var insertHTML =
     ('<div class="col-md-3 col-xs-12">' +
       '<div class="panel panel-default">' +
@@ -222,9 +238,11 @@ function clearMap() {
   $("#map").hide();
 }
 
-function updateMap(date) {
+function updateMap(date, buckets) {
 
-  bucketJson.forEach(function (bucket) {
+  var SCALE = 80;
+
+  buckets.forEach(function (bucket) {
     if(date !== bucket.investigate_date)
       return
     var lat = locationJson[bucket.bucket_id].lat;
@@ -232,7 +250,9 @@ function updateMap(date) {
     var eggNem = bucket.egg_count;
     var village = bucket.village;
     var avgEggNum = bucket.avg_egg_count;
-    heat.addLatLng([lat, lng, avgEggNum]);
+    console.log(avgEggNum)
+    if (avgEggNum !== 0) 
+      heat.addLatLng([lat, lng, avgEggNum / SCALE]);
 
     var icon = L.icon({
       iconUrl: getIconStyle(eggNem),
@@ -252,7 +272,7 @@ function updateMap(date) {
           '<td>{0}</td>' +
           '</tr>' +
           '<tr>' +
-          '<th>卵數</th>' +
+          '<th>捕獲數</th>' +
           '<td>{1}</td>' +
           '</tr>' +
           '<tr>' +
