@@ -92,11 +92,12 @@
     background: linear-gradient(45deg, #373737, #191919);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     border-radius: 12px;
-    margin: 24px 36px;
+    margin: 24px;
     box-shadow: 0 0 4px 0 #ffffff;
     border: none;
     padding: 24px;
     cursor: default;
+    letter-spacing: 1px;
 }
 
 .list-group-item:hover,
@@ -110,12 +111,18 @@
 }
 
 a.list-group-item h4.list-group-item-heading {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: white;
     opacity: 0.8;
     display: flex;
     justify-content: space-between;
     margin-bottom: 12px;
+}
+
+.list-group-item-text {
+    color: white;
+    opacity: 0.35;
+    font-size: 1rem;
 }
 
 .list-group {

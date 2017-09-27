@@ -1,17 +1,7 @@
-if (!String.prototype.format) {
-  String.prototype.format = function () {
-    const args = arguments;
-    return this.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] !== 'undefined' ? args[number] : match;
-    })
-  };
-}
-
-let bucketJson = {}
-let eventJson = {}
-let locationJson = {}
-let countJson = {}
-let placeJson = {}
+let bucketJson = []
+let eventJson = []
+let countJson = []
+let placeJson = []
 let mccDistanceLowerLimit
 let map;
 let markerArray = [];
@@ -23,7 +13,7 @@ let availableDates
 moment.locale('zh-tw')
 
 let getPlaceNameFunc = function (placeJson) {
-  var placeMap = {}
+  let placeMap = {}
   placeJson.forEach(function (d) {
     placeMap[d.place_id] = d.place_name
   })
@@ -32,7 +22,7 @@ let getPlaceNameFunc = function (placeJson) {
   }
 }
 
-var getCountFunc = (countJson) => {
+let getCountFunc = (countJson) => {
   let countMap = {}
   availableDates.forEach((d) => {
     countMap[d] = {}
@@ -40,13 +30,13 @@ var getCountFunc = (countJson) => {
   for (let i in countJson) {
     let dateData = countJson[i]
     for (let id in dateData)
-      countMap[i][id] = dateData[id].sum
+      countMap[i][id] = +dateData[id].sum
   }
   return (date) => {
     return countMap[date]
   }
 }
-var countryView = {
+const countryView = {
   '台南': [22.9971, 120.1926],
   '高雄': [22.6397615, 120.2999183],
   '屏東': [22.667431, 120.486307]
@@ -57,31 +47,40 @@ $(document).ready(function () {
   $('.range-start').datepicker({
     'autoclose': true,
     'zIndexOffset': 1000,
-    'format': 'yyyy-mm-dd'
+    'format': 'yyyy-mm-dd',
+    'disableTouchKeyboard': true
   }).on('changeDate', datepickerOnChange)
   $('.range-end').datepicker({
     'autoclose': true,
     'zIndexOffset': 1000,
-    'format': 'yyyy-mm-dd'
+    'format': 'yyyy-mm-dd',
+    'disableTouchKeyboard': true
   }).on('changeDate', datepickerOnChange)
 
-  var root_url = 'http://140.116.249.228:3000/apis/'
-  var urls = ['lamps', 'rules', 'mcc', 'counts', 'places'];
-  var reqPromises = urls.map(function (url) {
+  const root_url = 'http://140.116.249.228:3000/apis/'
+  // const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
+  const urls = ['lamps', 'rules', 'counts?formatBy=date', 'places'];
+  const reqPromises = urls.map(function (url) {
     return $.ajax({
-      // url: root_url + url,
-      url: url + '.json',
+      url: root_url + url,
+      // url: url + '.json',
       dataType: "JSON",
       type: "GET"
     });
   });
 
   Promise.all(reqPromises).then(function (res) {
-    bucketJson = res[0]['lamps']
-    mccDistanceLowerLimit = res[1]['rules'][0].distance_lower_limit
-    eventJson = res[2]['mcc']
-    countJson = res[3]['counts']
-    placeJson = res[4]['places']
+    let rule
+
+    [
+      bucketJson, 
+      rule,
+      // eventJson,
+      countJson,
+      placeJson
+    ] = res
+
+    mccDistanceLowerLimit = rule[0].distance_lower_limit
 
     console.log(res)
 
@@ -90,6 +89,9 @@ $(document).ready(function () {
     getCount = getCountFunc(countJson)
     initMap();
     setMapTitle('請選擇日期區間')
+  }).catch((err)=>{
+    setMapTitle(`資料錯誤：${err.status} ${err.statusText}`)
+    console.log(err)
   })
 });
 
@@ -105,16 +107,16 @@ function initMap() {
   $("#map").hide();
   $("#map").fadeIn();
 
-  var weekEggLegend = L.control({
+  const weekEggLegend = L.control({
     position: 'bottomright'
   });
 
   weekEggLegend.onAdd = function () {
-    var div = L.DomUtil.create('div', 'info legend'),
+    const div = L.DomUtil.create('div', 'info legend'),
       grades = [0, 1, 50, 100, 150, 200];
 
     div.innerHTML += '<span class = "legend-header">捕獲數（個）<hr>';
-    for (var i = 0; i < grades.length; i++) {
+    for (let i = 0; i < grades.length; i++) {
       if (grades[i] === 0) {
         div.innerHTML += '<div class=" barrel_legend" id="grade_' + i + '">' + '<i style="background:' + getIconStyleRGBA(grades[i]) + '"></i>' + grades[i] + '<br></div>';
       } else {
@@ -129,7 +131,7 @@ function initMap() {
 
   weekEggLegend.addTo(map);
   $(".barrel_legend > input").on("click", function () {
-    var selectedClass = '.' + $(this).val()
+    const selectedClass = '.' + $(this).val()
     if ($(this).prop("checked")) {
       $(selectedClass).css('display', 'block')
     } else {
@@ -175,6 +177,7 @@ function insertBucketList(dateDataMap) {
   const hasEndDate = !($('.range-end').val() === '')
   const startDate = hasStartDate ? moment($('.range-start').val()).format('YYYY-MM-DD') : '未選擇起始日期'
   const endDate = hasEndDate ? moment($('.range-end').val()).format('YYYY-MM-DD') : '未選擇結束日期'
+  const lampSumData = {}
   $(".map-container .list-group").empty();
   clearMap();
 
@@ -196,25 +199,31 @@ function insertBucketList(dateDataMap) {
         return d.lamp_id === id
       })
       const place = getPlaceName(lamp.place_id)
-      insertBucketHtml(place, lamp, count);
-      bindPopups(lamp, count);
+      insertBucketHtml(place, lamp, count, date);
+      if (!lampSumData[lamp.lamp_id]) {
+        lampSumData[lamp.lamp_id] = {}
+        lampSumData[lamp.lamp_id].lamp = lamp
+        lampSumData[lamp.lamp_id].count = 0
+      }
+      const lampCount = lampSumData[lamp.lamp_id].count
+      lampSumData[lamp.lamp_id].count = lampCount + count
     }
   }
-
+  bindPopups(lampSumData);
   $('#map').fadeIn()
 }
 
-function insertBucketHtml(info, bucket, count) {
-  var insertHTML = `<a class="list-group-item ">
+function insertBucketHtml(info, bucket, count, date) {
+  const insertHTML = `<a class="list-group-item ">
         <h4 class="list-group-item-heading"><span>${bucket.lamp_id}@${info}</span><span>&#9889;${count}</span></h4>
-        <p class="list-group-item-text"> ${moment.tz(bucket.updated_at, 'Asia/Taipei').format('LLL')}</p>
+        <p class="list-group-item-text"> ${moment(date).format('LL')}</p>
       </a>`
   $(".map-container .list-group").append(insertHTML);
 }
 
 function getKeys(obj) {
   try {
-    var keys = Object.keys(obj);
+    const keys = Object.keys(obj);
     return keys;
   } catch (err) {
     return [];
@@ -223,7 +232,6 @@ function getKeys(obj) {
 
 function setMapTitle(mapTitle) {
   // clear loading text 
-  console.log('set title', mapTitle)
   const title = $(`<h3>${mapTitle}</h3>`)
   $('.list-group').empty()
   $('.list-group').append(title)
@@ -234,9 +242,9 @@ function setMapTitle(mapTitle) {
 
 function renderEvent(events) {
   events.forEach(function (event) {
-    var latlng = [event.mcc_center[1], event.mcc_center[0]]
-    var radius = mccDistanceLowerLimit
-    var circle = L.circle(latlng, {
+    const latlng = [event.mcc_center[1], event.mcc_center[0]]
+    const radius = mccDistanceLowerLimit
+    const circle = L.circle(latlng, {
       radius: radius
     })
     circles.push(circle)
@@ -258,46 +266,50 @@ function clearMap() {
   $("#map").hide();
 }
 
-function bindPopups(lamp, count) {
+function bindPopups(lampSumData) {
 
-  var SCALE = 80;
+  const SCALE = 80;
 
-
-  var lat = lamp.lamp_location[1]
-  var lng = lamp.lamp_location[0]
-
-  var icon = L.icon({
-    iconUrl: getIconStyle(count),
-    iconSize: [45, 80], // size of the icon
-    popupAnchor: [0, -40],
-    iconAnchor: [22, 60],
-    className: getIconCat(count),
-  });
-
-  var PopUpContent = ('<table>' +
-    '<tr>' +
-    '<th> ID </th>' +
-    '<td> {0} </td>' +
-    '</tr>' +
-    '<tr>' +
-    '<th>地點</th>' +
-    '<td>{1}</td>' +
-    '</tr>' +
-    '<tr>' +
-    '<th>捕獲</th>' +
-    '<td>{2}</td>' +
-    '</tr>' +
-    '</table>').format(lamp.lamp_id, getPlaceName(lamp.place_id), count)
-
-  var marker = L.marker([lat, lng], {
+  for( let id in lampSumData ){
+    console.log(lampSumData)
+    const lamp = lampSumData[id].lamp
+    const count = lampSumData[id].count
+    const lat = lamp.lamp_location[1]
+    const lng = lamp.lamp_location[0]
+    const icon = L.icon({
+      iconUrl: getIconStyle(count),
+      iconSize: [45, 80], // size of the icon
+      popupAnchor: [0, -40],
+      iconAnchor: [22, 60],
+      className: getIconCat(count),
+    });
+    const PopUpContent = (`<table>
+      <tr>
+        <th> ID </th>
+        <td> ${lamp.lamp_id} </td>
+      </tr>
+      <tr>
+        <th>地點</th>
+        <td>${getPlaceName(lamp.place_id)}</td>
+      </tr>
+        <tr>
+        <th>捕獲</th>
+        <td>${count}</td>
+      </tr>
+      </table>`)
+    const marker = L.marker([lat, lng], {
       icon: icon
-    })
-    .bindPopup(PopUpContent).addTo(map);
-  markerArray.push(marker);
+    }).bindPopup(PopUpContent).addTo(map);
+    markerArray.push(marker);
+  }
+  if( markerArray.length > 0){
+    const group = new L.featureGroup(markerArray);
+    map.fitBounds(group.getBounds());
+  } 
 }
 
 function getIconStyle(amount) {
-  var style;
+  let style;
   if (amount === 0) {
     style = 'legend1';
   } else if (amount > 0 && amount <= 49) {
@@ -317,7 +329,7 @@ function getIconStyle(amount) {
 }
 
 function getIconCat(amount) {
-  var category;
+  let category;
   if (amount === 0) {
     category = 'grade_0';
   } else if (amount > 0 && amount <= 49) {
@@ -337,7 +349,7 @@ function getIconCat(amount) {
 }
 
 function getIconStyleRGBA(amount) {
-  var style;
+  let style;
   if (amount === 0) {
     style = '#00FF9D';
   } else if (amount > 0 && amount <= 49) {
