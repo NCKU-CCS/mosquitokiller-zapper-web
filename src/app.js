@@ -143,7 +143,10 @@ function datepickerOnChange() {
   let dataInInterval = {}
   const startDate = moment($('.range-start').val())
   const endDate = moment($('.range-end').val())
-  console.log('trigger change')
+  const events = eventJson.slice().filter((d) => {
+    const eventDate = moment.tz(d.created_at, 'Asia/Taipei')
+    return eventDate <= endDate && eventDate >= startDate
+  })
 
   if( startDate==='' || endDate === '')
     return
@@ -160,10 +163,11 @@ function datepickerOnChange() {
     dataInInterval[thisDayKey] = getCount(thisDayKey)
   })
 
+
   
 
   insertBucketList(dataInInterval);
-  renderEvent()
+  renderEvent(events)
 }
 
 function insertBucketList(dateDataMap) {
@@ -228,8 +232,8 @@ function setMapTitle(mapTitle) {
   title.fadeIn('slow');
 }
 
-function renderEvent(date) {
-  eventJson.forEach(function (event) {
+function renderEvent(events) {
+  events.forEach(function (event) {
     var latlng = [event.mcc_center[1], event.mcc_center[0]]
     var radius = mccDistanceLowerLimit
     var circle = L.circle(latlng, {
