@@ -58,12 +58,11 @@ $(document).ready(function () {
   }).on('changeDate', datepickerOnChange)
 
   const root_url = 'http://140.116.249.228:3000/apis/'
-  // const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
-  const urls = ['lamps', 'rules', 'counts?formatBy=date', 'places'];
+  const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
   const reqPromises = urls.map(function (url) {
     return $.ajax({
       url: root_url + url,
-      // url: url + '.json',
+      // url: url + '.json', //for debug
       dataType: "JSON",
       type: "GET"
     });
@@ -75,7 +74,7 @@ $(document).ready(function () {
     [
       bucketJson, 
       rule,
-      // eventJson,
+      eventJson,
       countJson,
       placeJson
     ] = res
