@@ -10,7 +10,11 @@ let getPlaceName
 let getCount
 let availableDates
 
-moment.locale('zh-tw')
+const countryView = {
+  '台南': [22.9971, 120.1926],
+  '高雄': [22.6397615, 120.2999183],
+  '屏東': [22.667431, 120.486307]
+}
 
 let getPlaceNameFunc = function (placeJson) {
   let placeMap = {}
@@ -36,21 +40,13 @@ let getCountFunc = (countJson) => {
     return countMap[date]
   }
 }
-const countryView = {
-  '台南': [22.9971, 120.1926],
-  '高雄': [22.6397615, 120.2999183],
-  '屏東': [22.667431, 120.486307]
-}
+
+moment.locale('zh-tw')
 
 $(document).ready(function () {
   setMapTitle('資料載入中...')
-  $('.range-start').datepicker({
-    'autoclose': true,
-    'zIndexOffset': 1000,
-    'format': 'yyyy-mm-dd',
-    'disableTouchKeyboard': true
-  }).on('changeDate', datepickerOnChange)
-  $('.range-end').datepicker({
+
+  $('.range-start, .range-end').datepicker({
     'autoclose': true,
     'zIndexOffset': 1000,
     'format': 'yyyy-mm-dd',
@@ -59,38 +55,33 @@ $(document).ready(function () {
 
   const root_url = 'http://140.116.249.228:3000/apis/'
   const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
+
   const reqPromises = urls.map(function (url) {
     return $.ajax({
       url: root_url + url,
-      // url: url + '.json', //for debug
       dataType: "JSON",
       type: "GET"
     });
   });
 
   Promise.all(reqPromises).then(function (res) {
+    console.log(res)
     let rule
-
-    [
-      bucketJson, 
-      rule,
-      eventJson,
-      countJson,
-      placeJson
-    ] = res
+    [ bucketJson, rule, eventJson,
+      countJson, placeJson] = res
 
     mccDistanceLowerLimit = rule[0].distance_lower_limit
-
-    console.log(res)
 
     availableDates = getKeys(countJson)
     getPlaceName = getPlaceNameFunc(placeJson)
     getCount = getCountFunc(countJson)
+
     initMap();
     setMapTitle('請選擇日期區間')
+
   }).catch((err)=>{
-    setMapTitle(`資料錯誤：${err.status} ${err.statusText}`)
     console.log(err)
+    setMapTitle(`資料錯誤：${err.status} ${err.statusText}`)
   })
 });
 
@@ -129,18 +120,9 @@ function initMap() {
   };
 
   weekEggLegend.addTo(map);
-  $(".barrel_legend > input").on("click", function () {
-    const selectedClass = '.' + $(this).val()
-    if ($(this).prop("checked")) {
-      $(selectedClass).css('display', 'block')
-    } else {
-      $(selectedClass).css('display', 'none')
-    }
-  })
 }
 
 function datepickerOnChange() {
-  let availableDatesInInterval = []
   let dataInInterval = {}
   const startDate = moment($('.range-start').val())
   const endDate = moment($('.range-end').val())
@@ -155,17 +137,10 @@ function datepickerOnChange() {
   availableDates.forEach((d) => {
     let thisDay = moment(d)
     if (thisDay >= startDate && thisDay <= endDate) {
-      availableDatesInInterval.push(thisDay)
+      let thisDayKey = thisDay.format('YYYY-MM-DD')
+      dataInInterval[thisDayKey] = getCount(thisDayKey)
     }
   })
-
-  availableDatesInInterval.forEach((d) => {
-    let thisDayKey = d.format('YYYY-MM-DD')
-    dataInInterval[thisDayKey] = getCount(thisDayKey)
-  })
-
-
-  
 
   insertBucketList(dataInInterval);
   renderEvent(events)
@@ -270,7 +245,6 @@ function bindPopups(lampSumData) {
   const SCALE = 80;
 
   for( let id in lampSumData ){
-    console.log(lampSumData)
     const lamp = lampSumData[id].lamp
     const count = lampSumData[id].count
     const lat = lamp.lamp_location[1]
