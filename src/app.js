@@ -1,3 +1,4 @@
+import style from './mapStyle'
 let bucketJson = []
 let eventJson = []
 let countJson = []
@@ -87,13 +88,11 @@ $(document).ready(function () {
 
 function initMap() {
   map = L.map('map').setView(countryView["台南"], 14)
+  const roads = L.gridLayer.googleMutant({
+    type: 'roadmap', // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
+    styles: style,
+  }).addTo(map)
 
-  L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    maxZoom: 18,
-    id: 'ching56.17hng6ja',
-    accessToken: 'pk.eyJ1IjoiY2hpbmc1NiIsImEiOiJjaXNiZmYydGMwMTN1MnpwbnNqNWVqM2plIn0.k7h-PUGX7Tl5xLwDH3Qpsg'
-  }).addTo(map);
   $("#map").hide();
   $("#map").fadeIn();
 
@@ -277,7 +276,10 @@ function bindPopups(lampSumData) {
   }
   if( markerArray.length > 0){
     const group = new L.featureGroup(markerArray);
-    map.fitBounds(group.getBounds());
+    console.log(map)
+    map.fitBounds(group.getBounds(),{
+      maxZoom: 17,
+    });
   } 
 }
 
