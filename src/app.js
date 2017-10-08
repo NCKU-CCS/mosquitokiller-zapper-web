@@ -54,7 +54,7 @@ $(document).ready(function () {
     'disableTouchKeyboard': true
   }).on('changeDate', datepickerOnChange)
 
-  const root_url = 'http://140.116.249.228:3000/apis/'
+  const root_url = 'https://mosquitokiller.csie.ncku.edu.tw/apis/'
   const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
 
   const reqPromises = urls.map(function (url) {
