@@ -55,11 +55,15 @@ $(document).ready(function () {
   }).on('changeDate', datepickerOnChange)
 
   const root_url = 'https://mosquitokiller.csie.ncku.edu.tw/apis/'
-  const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
+  // const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
+  
+  // DEMO URLS
+  const urls = ['lamps', 'rules', 'mcc', 'counts', 'places'];
 
   const reqPromises = urls.map(function (url) {
     return $.ajax({
-      url: root_url + url,
+      // url: root_url + url,
+      url: url + '.json',
       dataType: "JSON",
       type: "GET"
     });
