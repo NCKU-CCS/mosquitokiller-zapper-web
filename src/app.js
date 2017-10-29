@@ -47,13 +47,6 @@ moment.locale('zh-tw')
 $(document).ready(function () {
   setMapTitle('資料載入中...')
 
-  $('.range-start, .range-end').datepicker({
-    'autoclose': true,
-    'zIndexOffset': 1000,
-    'format': 'yyyy-mm-dd',
-    'disableTouchKeyboard': true
-  }).on('changeDate', datepickerOnChange)
-
   const root_url = 'https://mosquitokiller.csie.ncku.edu.tw/apis/'
   // const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
   
@@ -81,9 +74,17 @@ $(document).ready(function () {
     getPlaceName = getPlaceNameFunc(placeJson)
     getCount = getCountFunc(countJson)
 
-    initMap();
+    initMap()
+    $('.range-start, .range-end').datepicker({
+      'autoclose': true,
+      'zIndexOffset': 1000,
+      'format': 'yyyy-mm-dd',
+      'disableTouchKeyboard': true
+    }).on('changeDate', datepickerOnChange)
     setMapTitle('請選擇日期區間')
-
+    
+    $('.range-start').datepicker('setDate', new Date())
+    $('.range-end').datepicker('setDate', new Date())
   }).catch((err)=>{
     console.log(err)
     setMapTitle(`資料錯誤：${err.status} ${err.statusText}`)
