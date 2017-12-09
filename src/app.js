@@ -48,15 +48,15 @@ $(document).ready(function () {
   setMapTitle('資料載入中...')
 
   const root_url = 'https://mosquitokiller.csie.ncku.edu.tw/apis/'
-  // const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
+  const urls = ['lamps', 'rules', 'mcc', 'counts?formatBy=date', 'places'];
   
   // DEMO URLS
-  const urls = ['lamps', 'rules', 'mcc', 'counts', 'places'];
+  // const urls = ['lamps', 'rules', 'mcc', 'counts', 'places'];
 
   const reqPromises = urls.map(function (url) {
     return $.ajax({
-      // url: root_url + url,
-      url: url + '.json',
+      url: root_url + url,
+      // url: url + '.json',
       dataType: "JSON",
       type: "GET"
     });
@@ -73,18 +73,17 @@ $(document).ready(function () {
     availableDates = getKeys(countJson)
     getPlaceName = getPlaceNameFunc(placeJson)
     getCount = getCountFunc(countJson)
-
     initMap()
+
     $('.range-start, .range-end').datepicker({
       'autoclose': true,
       'zIndexOffset': 1000,
       'format': 'yyyy-mm-dd',
       'disableTouchKeyboard': true
     }).on('changeDate', datepickerOnChange)
-    setMapTitle('請選擇日期區間')
-    
     $('.range-start').datepicker('setDate', new Date())
     $('.range-end').datepicker('setDate', new Date())
+
   }).catch((err)=>{
     console.log(err)
     setMapTitle(`資料錯誤：${err.status} ${err.statusText}`)
@@ -97,9 +96,6 @@ function initMap() {
     type: 'roadmap', // valid values are 'roadmap', 'satellite', 'terrain' and 'hybrid'
     styles: style,
   }).addTo(map)
-
-  $("#map").hide();
-  $("#map").fadeIn();
 
   const weekEggLegend = L.control({
     position: 'bottomright'
@@ -188,7 +184,6 @@ function insertBucketList(dateDataMap) {
     }
   }
   bindPopups(lampSumData);
-  $('#map').fadeIn()
 }
 
 function insertBucketHtml(info, bucket, count, date) {
@@ -214,8 +209,8 @@ function setMapTitle(mapTitle) {
   $('.list-group').empty()
   $('.list-group').append(title)
   
-  title.hide();
-  title.fadeIn('slow');
+  title.fadeOut('fast')
+  title.fadeIn('fast')
 }
 
 function renderEvent(events) {
@@ -240,8 +235,6 @@ function clearMap() {
   })
 
   circles = []
-
-  $("#map").hide();
 }
 
 function bindPopups(lampSumData) {
